@@ -1,0 +1,5 @@
+{
+  "name": "Titan Gym",
+  "description": "A gym dashboard application with attendance tracking and profile settings.",
+  "requestFramePermissions": []
+}
