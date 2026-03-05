@@ -4,8 +4,54 @@
   --color-primary: #FAB95B;
   --color-secondary: #1A3263;
   --color-accent: #547792;
-  --color-background-light: #E8E2DB;
+  --color-background-light: #f4f5f8;
   --color-sidebar-light: #1A3263;
   --color-card-light: #FFFFFF;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* === Dark Mode Overrides === */
+.dark {
+  --color-secondary: #e8edf4;
+  --color-accent: #8ea8be;
+  --color-background-light: #0f172a;
+  --color-sidebar-light: #020617;
+  --color-card-light: #1e293b;
+}
+
+/* Dark mode utility overrides for components using hard-coded bg/text colors */
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #162032 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1a2840 !important;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: #2d4263 !important;
+}
+
+.dark .text-gray-400 {
+  color: #6b89a8 !important;
+}
+
+.dark .text-gray-600 {
+  color: #8ea8be !important;
+}
+
+.dark .hover\:bg-gray-50:hover {
+  background-color: #1f3150 !important;
+}
+
+html,
+body {
+  background-color: var(--color-background-light);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }

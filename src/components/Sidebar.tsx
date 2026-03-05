@@ -1,63 +1,94 @@
-import { Dumbbell, LayoutDashboard, CalendarCheck, User, LogOut, Shield } from 'lucide-react';
+import { Dumbbell, LayoutDashboard, CalendarCheck, User, LogOut, Shield, Apple, Activity, X, Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 interface SidebarProps {
   currentView: string;
   setCurrentView: (view: string) => void;
   setIsAdminMode: (isAdmin: boolean) => void;
   onLogout: () => void;
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: (open: boolean) => void;
 }
 
-export function Sidebar({ currentView, setCurrentView, setIsAdminMode, onLogout }: SidebarProps) {
+export function Sidebar({ currentView, setCurrentView, setIsAdminMode, onLogout, mobileMenuOpen, setMobileMenuOpen }: SidebarProps) {
+  const { theme, setTheme } = useTheme();
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'attendance', label: 'Attendance', icon: CalendarCheck },
+    { id: 'workouts', label: 'Workouts', icon: Activity },
+    { id: 'food', label: 'Food Tracker', icon: Apple },
     { id: 'profile', label: 'Profile', icon: User },
   ];
 
   return (
-    <aside className="w-64 bg-sidebar-light text-white flex flex-col flex-shrink-0 h-screen">
-      <div className="p-6 flex items-center space-x-3">
-        <div className="text-primary">
-          <Dumbbell size={28} />
+    <>
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setMobileMenuOpen?.(false)}
+        />
+      )}
+
+      <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-sidebar-light text-white flex flex-col flex-shrink-0 h-screen transition-transform duration-300 ease-in-out ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <div className="p-6 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="text-primary">
+              <Dumbbell size={28} />
+            </div>
+            <span className="text-xl font-bold tracking-tight">Dhaka Fit & Flex</span>
+          </div>
+          {setMobileMenuOpen && (
+            <button onClick={() => setMobileMenuOpen(false)} className="md:hidden text-gray-400 hover:text-white p-1">
+              <X size={24} />
+            </button>
+          )}
         </div>
-        <span className="text-xl font-bold tracking-tight">Dhaka Fit & Flex</span>
-      </div>
-      <nav className="flex-1 px-4 py-4 space-y-2">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = currentView === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setCurrentView(item.id)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                isActive
+        <nav className="flex-1 px-4 py-4 space-y-2">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = currentView === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentView(item.id)}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive
                   ? 'bg-white/10 text-white'
                   : 'text-gray-300 hover:bg-white/5 hover:text-white'
-              }`}
-            >
-              <Icon size={20} className={isActive ? 'text-primary' : ''} />
-              <span className="font-medium">{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
-      <div className="p-4 space-y-2">
-        <button 
-          onClick={() => setIsAdminMode(true)}
-          className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
-        >
-          <Shield size={20} />
-          <span className="font-medium">Admin Panel</span>
-        </button>
-        <button 
-          onClick={onLogout}
-          className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
-        >
-          <LogOut size={20} />
-          <span className="font-medium">Logout</span>
-        </button>
-      </div>
-    </aside>
+                  }`}
+              >
+                <Icon size={20} className={isActive ? 'text-primary' : ''} />
+                <span className="font-medium">{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+        <div className="p-4 space-y-2">
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+          >
+            {theme === 'dark' ? <Sun size={20} className="text-primary" /> : <Moon size={20} />}
+            <span className="font-medium">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
+          <button
+            onClick={() => setIsAdminMode(true)}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+          >
+            <Shield size={20} />
+            <span className="font-medium">Admin Panel</span>
+          </button>
+          <button
+            onClick={onLogout}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+          >
+            <LogOut size={20} />
+            <span className="font-medium">Logout</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
+
