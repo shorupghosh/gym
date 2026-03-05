@@ -100,14 +100,14 @@ export default function App() {
             mobileMenuOpen={mobileMenuOpen}
             setMobileMenuOpen={setMobileMenuOpen}
           />
-          <main className="flex-1 overflow-y-auto">
-            {adminView === 'dashboard' && <AdminDashboard />}
-            {adminView === 'members' && <AdminMembers />}
-            {adminView === 'scanner' && <AdminScanner />}
-            {adminView === 'analytics' && <AdminAnalytics />}
-            {adminView === 'communications' && <AdminNotifications />}
-            {adminView === 'plans' && <AdminPlans />}
-            {adminView === 'settings' && <AdminSettings />}
+          <main className="flex-1 overflow-y-auto relative h-full">
+            <div className={adminView === 'dashboard' ? 'block' : 'hidden'}><AdminDashboard /></div>
+            <div className={adminView === 'members' ? 'block' : 'hidden'}><AdminMembers /></div>
+            <div className={adminView === 'scanner' ? 'block' : 'hidden'}><AdminScanner /></div>
+            <div className={adminView === 'analytics' ? 'block' : 'hidden'}><AdminAnalytics /></div>
+            <div className={adminView === 'communications' ? 'block' : 'hidden'}><AdminNotifications /></div>
+            <div className={adminView === 'plans' ? 'block' : 'hidden'}><AdminPlans /></div>
+            <div className={adminView === 'settings' ? 'block' : 'hidden'}><AdminSettings /></div>
           </main>
         </>
       ) : (

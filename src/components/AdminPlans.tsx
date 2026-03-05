@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { PlusCircle, X, CheckCircle2, Loader2, Edit2, Trash2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useGym } from '../context/GymContext';
 
 interface Plan {
   id: string;
@@ -13,8 +14,7 @@ interface Plan {
 }
 
 export function AdminPlans() {
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { plans, refreshData } = useGym();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -35,23 +35,6 @@ export function AdminPlans() {
     duration_type: 'Monthly',
     description: ''
   });
-
-  const fetchPlans = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.from('plans').select('*').order('created_at', { ascending: false });
-      if (error) throw error;
-      setPlans(data as Plan[] || []);
-    } catch (error) {
-      console.error('Failed to fetch plans:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPlans();
-  }, []);
 
   const showToast = (msg: string) => {
     setSuccessMessage(msg);
@@ -82,7 +65,7 @@ export function AdminPlans() {
       if (error) throw error;
 
       if (data) {
-        setPlans([...plans, data]);
+        refreshData();
         showToast('Plan created successfully.');
       }
     } catch (e) {
@@ -108,7 +91,7 @@ export function AdminPlans() {
       if (error) throw error;
 
       if (data) {
-        setPlans(plans.map(p => p.id === data.id ? data : p));
+        refreshData();
         showToast('Plan updated successfully.');
       }
     } catch (e) {
@@ -146,7 +129,7 @@ export function AdminPlans() {
       const { error } = await supabase.from('plans').delete().eq('id', planToDelete);
       if (error) throw error;
 
-      setPlans(plans.filter(p => p.id !== planToDelete));
+      refreshData();
       showToast('Plan deleted successfully.');
     } catch (e) {
       console.error('Error deleting plan:', e);
@@ -192,11 +175,7 @@ export function AdminPlans() {
           <span>Add New Plan</span>
         </button>
 
-        {loading ? (
-          <div className="flex justify-center items-center py-12">
-            <Loader2 className="animate-spin text-primary" size={32} />
-          </div>
-        ) : plans.length === 0 ? (
+        {plans.length === 0 ? (
           <div className="text-center py-12 text-accent bg-white rounded-xl border border-gray-200">
             No plans found. Create your first plan above.
           </div>
