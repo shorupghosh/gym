@@ -1,11 +1,12 @@
 {
+    "framework": "vite",
     "rewrites": [
         {
-            "source": "/api/(.*)",
+            "source": "/api/:path*",
             "destination": "/api/index.ts"
         },
         {
-            "source": "/(.*)",
+            "source": "/((?!api|assets|favicon.ico|manifest.json).*)",
             "destination": "/index.html"
         }
     ],
