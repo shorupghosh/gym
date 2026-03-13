@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Bell, QrCode, Users, Clock, DollarSign, Zap, AlertTriangle, UserPlus, TrendingUp } from 'lucide-react';
 import { useGym } from '../context/GymContext';
 import { supabase } from '../lib/supabase';
+import { motion } from 'motion/react';
 
 interface DashboardStats {
   totalMembers: number;
@@ -69,8 +70,18 @@ export function AdminDashboard() {
     fetchRevenue();
   }, [members]); // Refresh if members change
 
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="flex-1 bg-background-light p-4 sm:p-8">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+      className="flex-1 bg-background-light p-4 sm:p-8 overflow-hidden"
+    >
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h2 className="text-2xl sm:text-3xl font-black text-secondary tracking-tight">Admin Dashboard</h2>
@@ -93,39 +104,47 @@ export function AdminDashboard() {
 
       {/* Grid of Key Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-        <StatCard
-          icon={<Users className="text-primary" size={20} />}
-          label="Total Members"
-          value={stats.totalMembers}
-          trend="+12%"
-          color="bg-amber-50"
-        />
-        <StatCard
-          icon={<Zap className="text-green-600" size={20} />}
-          label="Active This Month"
-          value={stats.activeMembers}
-          trend="+5%"
-          color="bg-green-50"
-        />
-        <StatCard
-          icon={<Clock className="text-blue-600" size={20} />}
-          label="Check-ins Today"
-          value={stats.checkInsToday}
-          trend="85% cap"
-          color="bg-blue-50"
-        />
-        <StatCard
-          icon={<DollarSign className="text-purple-600" size={20} />}
-          label="Monthly Revenue"
-          value={`৳${revenue.toLocaleString()}`}
-          trend="+18%"
-          color="bg-purple-50"
-        />
+        <motion.div variants={cardVariants}>
+          <StatCard
+            icon={<Users className="text-primary" size={20} />}
+            label="Total Members"
+            value={stats.totalMembers}
+            trend="+12%"
+            color="bg-amber-50"
+          />
+        </motion.div>
+        <motion.div variants={cardVariants}>
+          <StatCard
+            icon={<Zap className="text-green-600" size={20} />}
+            label="Active This Month"
+            value={stats.activeMembers}
+            trend="+5%"
+            color="bg-green-50"
+          />
+        </motion.div>
+        <motion.div variants={cardVariants}>
+          <StatCard
+            icon={<Clock className="text-blue-600" size={20} />}
+            label="Check-ins Today"
+            value={stats.checkInsToday}
+            trend="85% cap"
+            color="bg-blue-50"
+          />
+        </motion.div>
+        <motion.div variants={cardVariants}>
+          <StatCard
+            icon={<DollarSign className="text-purple-600" size={20} />}
+            label="Monthly Revenue"
+            value={`৳${revenue.toLocaleString()}`}
+            trend="+18%"
+            color="bg-purple-50"
+          />
+        </motion.div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 overflow-hidden">
         {/* Recent Check-ins */}
-        <div className="lg:col-span-1 bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
+        <motion.div variants={cardVariants} className="lg:col-span-1 bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-black text-secondary uppercase tracking-wider text-sm">Recent Activity</h3>
             <button className="text-xs font-bold text-primary hover:underline">View All</button>
@@ -144,10 +163,10 @@ export function AdminDashboard() {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* New Members Showcase */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-[400px] flex flex-col">
+        <motion.div variants={cardVariants} className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-[400px] flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-black text-secondary uppercase tracking-wider text-sm">New Members</h3>
@@ -193,9 +212,9 @@ export function AdminDashboard() {
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

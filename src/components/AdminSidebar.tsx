@@ -1,25 +1,25 @@
 import { Dumbbell, LayoutDashboard, Users, ClipboardList, Settings, LogOut, ArrowLeft, QrCode, BarChart3, Bell, X, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { Link, useLocation } from 'react-router-dom';
 
 interface AdminSidebarProps {
-  currentView: string;
-  setCurrentView: (view: string) => void;
   setIsAdminMode: (isAdmin: boolean) => void;
   onLogout: () => void;
   mobileMenuOpen?: boolean;
   setMobileMenuOpen?: (open: boolean) => void;
 }
 
-export function AdminSidebar({ currentView, setCurrentView, setIsAdminMode, onLogout, mobileMenuOpen, setMobileMenuOpen }: AdminSidebarProps) {
+export function AdminSidebar({ setIsAdminMode, onLogout, mobileMenuOpen, setMobileMenuOpen }: AdminSidebarProps) {
   const { theme, setTheme } = useTheme();
+  const location = useLocation();
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'members', label: 'Members', icon: Users },
-    { id: 'scanner', label: 'Attendance', icon: QrCode },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'communications', label: 'Communications', icon: Bell },
-    { id: 'plans', label: 'Plans', icon: ClipboardList },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/admin/members', label: 'Members', icon: Users },
+    { path: '/admin/scanner', label: 'Attendance', icon: QrCode },
+    { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+    { path: '/admin/communications', label: 'Communications', icon: Bell },
+    { path: '/admin/plans', label: 'Plans', icon: ClipboardList },
+    { path: '/admin/settings', label: 'Settings', icon: Settings },
   ];
 
   return (
@@ -52,11 +52,12 @@ export function AdminSidebar({ currentView, setCurrentView, setIsAdminMode, onLo
         <nav className="flex-1 px-4 py-4 space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = currentView === item.id;
+            const isActive = location.pathname === item.path || (item.path !== '/admin' && location.pathname.startsWith(item.path));
             return (
-              <button
-                key={item.id}
-                onClick={() => setCurrentView(item.id)}
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileMenuOpen?.(false)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive
                   ? 'bg-white/10 text-white'
                   : 'text-gray-300 hover:bg-white/5 hover:text-white'
@@ -64,7 +65,7 @@ export function AdminSidebar({ currentView, setCurrentView, setIsAdminMode, onLo
               >
                 <Icon size={20} className={isActive ? 'text-primary' : ''} />
                 <span className="font-medium">{item.label}</span>
-              </button>
+              </Link>
             );
           })}
         </nav>

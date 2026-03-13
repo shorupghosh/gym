@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Dumbbell, Droplet, Clock, CalendarCheck, AlertTriangle, CheckCircle2, QrCode, TrendingUp, Bell } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { motion } from 'motion/react';
 
 export function Dashboard() {
   const [member, setMember] = useState<any>(null);
@@ -90,17 +91,32 @@ export function Dashboard() {
 
   const expiryInfo = getExpiryInfo();
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="flex-1 overflow-y-auto p-4 sm:p-8">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="flex-1 overflow-y-auto p-4 sm:p-8"
+    >
       <header className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 text-secondary">Welcome Back, {member.full_name.split(' ')[0]}</h1>
+        <motion.h1 variants={itemVariants} className="text-4xl font-bold mb-2 text-secondary">Welcome Back, {member.full_name.split(' ')[0]}</motion.h1>
         <p className="text-accent text-lg">Your performance is looking great this week.</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
         {/* QR Check-in Card */}
-        <div className="lg:col-span-1">
-          <div className="bg-card-light rounded-2xl p-6 border-2 border-primary shadow-lg relative overflow-hidden">
+        <motion.div variants={itemVariants} className="lg:col-span-1">
+          <div className="bg-card-light rounded-2xl p-6 border-2 border-primary shadow-lg relative overflow-hidden transform transition-all hover:scale-[1.02]">
             <div className="absolute inset-0 bg-primary/5 pointer-events-none"></div>
             <div className="relative z-10 flex justify-between items-start mb-6">
               <div>
@@ -148,36 +164,36 @@ export function Dashboard() {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <div className="lg:col-span-2 flex flex-col gap-4 sm:gap-8">
           {/* Stats Row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+            <motion.div variants={itemVariants} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mx-auto mb-3">
                 <CalendarCheck size={20} className="text-primary" />
               </div>
               <div className="text-3xl font-black text-secondary">{checkIns.length}</div>
               <div className="text-xs font-bold text-accent tracking-wider uppercase mt-1">Check-ins</div>
-            </div>
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+            </motion.div>
+            <motion.div variants={itemVariants} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mx-auto mb-3">
                 <Dumbbell size={20} className="text-primary" />
               </div>
               <div className="text-3xl font-black text-secondary">{workoutCount}</div>
               <div className="text-xs font-bold text-accent tracking-wider uppercase mt-1">Workouts</div>
-            </div>
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+            </motion.div>
+            <motion.div variants={itemVariants} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mx-auto mb-3">
                 <TrendingUp size={20} className="text-primary" />
               </div>
               <div className="text-3xl font-black text-secondary">{todayCalories}</div>
               <div className="text-xs font-bold text-accent tracking-wider uppercase mt-1">Calories Today</div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Recent Notifications */}
-          <div className="bg-card-light rounded-2xl p-6 shadow-md border border-gray-200">
+          <motion.div variants={itemVariants} className="bg-card-light rounded-2xl p-6 shadow-md border border-gray-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-secondary">Recent Notifications</h2>
               <button className="text-primary hover:text-primary/80 font-medium text-sm transition-colors">Mark All Read</button>
@@ -214,10 +230,10 @@ export function Dashboard() {
                 })
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Recent Attendance */}
-          <div className="bg-card-light rounded-2xl p-6 shadow-md border border-gray-200">
+          <motion.div variants={itemVariants} className="bg-card-light rounded-2xl p-6 shadow-md border border-gray-200">
             <h2 className="text-xl font-bold mb-4 text-secondary">Recent Attendance</h2>
             {checkIns.length === 0 ? (
               <p className="text-accent text-sm">No check-ins yet. Visit the gym to get started!</p>
@@ -242,9 +258,9 @@ export function Dashboard() {
                 })}
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
