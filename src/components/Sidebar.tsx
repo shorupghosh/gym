@@ -1,23 +1,23 @@
 import { Dumbbell, LayoutDashboard, CalendarCheck, User, LogOut, Shield, Apple, Activity, X, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarProps {
-  currentView: string;
-  setCurrentView: (view: string) => void;
   setIsAdminMode: (isAdmin: boolean) => void;
   onLogout: () => void;
   mobileMenuOpen?: boolean;
   setMobileMenuOpen?: (open: boolean) => void;
 }
 
-export function Sidebar({ currentView, setCurrentView, setIsAdminMode, onLogout, mobileMenuOpen, setMobileMenuOpen }: SidebarProps) {
+export function Sidebar({ setIsAdminMode, onLogout, mobileMenuOpen, setMobileMenuOpen }: SidebarProps) {
   const { theme, setTheme } = useTheme();
+  const location = useLocation();
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'attendance', label: 'Attendance', icon: CalendarCheck },
-    { id: 'workouts', label: 'Workouts', icon: Activity },
-    { id: 'food', label: 'Food Tracker', icon: Apple },
-    { id: 'profile', label: 'Profile', icon: User },
+    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/attendance', label: 'Attendance', icon: CalendarCheck },
+    { path: '/workouts', label: 'Workouts', icon: Activity },
+    { path: '/food', label: 'Food Tracker', icon: Apple },
+    { path: '/profile', label: 'Profile', icon: User },
   ];
 
   return (
@@ -47,11 +47,12 @@ export function Sidebar({ currentView, setCurrentView, setIsAdminMode, onLogout,
         <nav className="flex-1 px-4 py-4 space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = currentView === item.id;
+            const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
             return (
-              <button
-                key={item.id}
-                onClick={() => setCurrentView(item.id)}
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileMenuOpen?.(false)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive
                   ? 'bg-white/10 text-white'
                   : 'text-gray-300 hover:bg-white/5 hover:text-white'
@@ -59,7 +60,7 @@ export function Sidebar({ currentView, setCurrentView, setIsAdminMode, onLogout,
               >
                 <Icon size={20} className={isActive ? 'text-primary' : ''} />
                 <span className="font-medium">{item.label}</span>
-              </button>
+              </Link>
             );
           })}
         </nav>
